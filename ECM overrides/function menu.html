@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<overrides>
+	<override type=functionmenu>
+		<commands subtypes="144">
+        [LL_WEBREPORT_IF ",[LL_REPTAG_OVERRIDEOBJID VERINFO:MIMETYPE /]," IN ",application/vnd.etsi.asic-e+zip," /]
+			<addcommand newcmd="Sign" neworder="1" newurl="[LL_REPTAG_URLPREFIX /][LL_REPTAG_'ssViewSignaturesBrowseViewClassicAdapter' NODEINFO:ID LLURL:REPORT /]&did=[LL_REPTAG_OVERRIDEOBJID /]&nexturl=[LL_REPTAG_NEXTURL ESCAPEURL /]" newParent="Main" />
+        [LL_WEBREPORT_ENDIF /]
+		</commands>
+	</override>
+</overrides>
