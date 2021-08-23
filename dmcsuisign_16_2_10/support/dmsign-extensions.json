@@ -1,0 +1,44 @@
+{
+  "csui/models/server.module/server.module.collection": {
+    "modules": {
+      "dmsign": {
+        "version": "16.11.0"
+      }
+    }
+  },
+  "csui/utils/commands": {
+    "extensions": {
+      "dmsign": [
+        "dmsign/commands/sign/sign.command"
+      ]
+    }
+  },
+  "csui/widgets/nodestable/toolbaritems": {
+    "extensions": {
+      "dmsign": [
+        "dmsign/commands/sign/sign.nodestable.toolitems"
+      ]
+    }
+  },
+  "workflow/widgets/workitem/workitem.attachments/toolbaritems": {
+    "extensions": {
+      "dmsign": [
+        "dmsign/commands/sign/sign.workitem.attachments.toolitems"
+      ]
+    }
+  },
+  "csui/widgets/metadata/header.dropdown.menu.items": {
+    "extensions": {
+      "dmsign": [
+        "dmsign/commands/sign/sign.metadata.menu.items"
+      ]
+    }
+  },
+  "csui/widgets/search.results/toolbaritems": {
+    "extensions": {
+      "dmsign": [
+        "dmsign/commands/sign/sign.search.results.toolbaritems"
+      ]
+    }
+  }
+}

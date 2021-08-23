@@ -1,0 +1,2 @@
+csui.require.config({"bundles":{"dmsign/bundles/dmsign-all":["dmsign/commands/sign/sign.command","dmsign/commands/sign/sign.nodestable.toolitems","dmsign/commands/sign/sign.metadata.menu.items","dmsign/commands/sign/sign.search.results.toolbaritems"]}});
+//# sourceMappingURL=dmsign-index.js.map
