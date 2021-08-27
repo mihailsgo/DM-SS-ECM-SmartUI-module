@@ -1,4 +1,4 @@
-Scenario Nr. 1: Deliver latest DM SS SMartUI module to new client
+Scenario Nr. 1: Deliver latest DM SS SmartUI module to new client
   1. Install microservices - container / archive / fallback
   2. Copy from DM DEMO "D:\nginx-1.15.0\conf\nginx.conf" file and put it at the same location in new client machine.
   3. Copy from DM DEMO Signing_Proxy application "D:\nginx-1.15.0\node\Signing_Proxy\" to same path in new client machine.
@@ -8,7 +8,7 @@ Scenario Nr. 1: Deliver latest DM SS SMartUI module to new client
   7. Separately adjust solution browse view component to support signing (should be discussed with SS team to define estimate for such activities - very individual for each client).
   8. If client has requested eparakstsMobile - ask Keit to help with client credentials configurations at microservice level. Ask Edgars St. to register ePM instance at LVRTC.
 
-Scenario Nr. 2: Updating existing DM SS SMartUI module to latest version (includes ePM)
+Scenario Nr. 2: Updating existing DM SS SmartUI module to latest version / updating DM SS SmartUI module to support eparakstsMobile (ePM)
   1. Microservices should be updated to latest version.
   2. Unistall such modules if they are installed: DMCSUIINFO un CREATECONTAINER.
   3. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
