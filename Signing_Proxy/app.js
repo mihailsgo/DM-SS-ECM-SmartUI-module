@@ -720,29 +720,34 @@ app.get('/initEPMSign', function(req, res){
 		method: 'POST',
 		json: true
 	}, function(error, response, body) {
-		let sessionID = body.sessionId;
-		
-		//console.info(response.headers.location);
-		
-		let newRequest = {
-			session: sessionID,
-			location: response.headers.location,
-			creationTime: moment().unix(),
-			documentid: docid,
-			fileType: filetype,
-			status: 'SIGNING_STARTED',
-			url: '',
-			urlsend: false
+		if (!error)
+		{
+			let sessionID = body.sessionId;
+			
+			//console.info(response.headers.location);
+			
+			let newRequest = {
+				session: sessionID,
+				location: response.headers.location,
+				creationTime: moment().unix(),
+				documentid: docid,
+				fileType: filetype,
+				status: 'SIGNING_STARTED',
+				url: '',
+				urlsend: false
+			}
+			
+			activeEPMRequests.push(newRequest);
+			
+			//console.info(activeEPMRequests);
+			
+			res.send({
+						sessionID:body.sessionId,
+						location:response.headers.location
+					 });
+		} else {
+			res.send({status:'ERROR'})
 		}
-		
-		activeEPMRequests.push(newRequest);
-		
-		//console.info(activeEPMRequests);
-		
-		res.send({
-					sessionID:body.sessionId,
-					location:response.headers.location
-				 });
 	})
 })
 
