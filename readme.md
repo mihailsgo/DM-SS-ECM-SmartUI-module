@@ -14,26 +14,26 @@
   1. Microservices should be updated to latest version.
   2. Unistall such modules if they are installed: DMCSUIINFO un CREATECONTAINER.
   3. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
-  4. Changes in ECM:
-     4.1. Location: Signing Service (SS)/08. SmartUI/View - Signatures - SmartUI/Signatures (ssViewSignaturesCSUI) WR  
-          ToDo: A) Take WR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757203		       
-		B) Set nikname "ssViewSignaturesCSUI"
-     4.2. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/Signatures (ssViewSignaturesBrowseView) LR 
-          ToDo: A) Create
-		B) Take LR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6874463
-     4.3. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/Signatures (ssViewSignaturesBrowseView) WR 
-	  ToDo: 
-		A) Add source - LR from 4.2.
-		B) Take WR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757200
-     4.4. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/SS adapter for AV overrides (ssViewSignaturesBrowseViewClassicAdapter) 
-	  ToDo:	
-		A) Create
-		B) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/7057431
-		C) Set nickname "ssViewSignaturesBrowseViewClassicAdapter"
+  4. Changes in ECM:<br/>
+  &nbsp;&nbsp; 4.1. Location: Signing Service (SS)/08. SmartUI/View - Signatures - SmartUI/Signatures (ssViewSignaturesCSUI) WR<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;ToDo: A) Take WR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757203<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B) Set nikname "ssViewSignaturesCSUI"<br/>
+  &nbsp;&nbsp; 4.2. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/Signatures (ssViewSignaturesBrowseView) LR<br/> 
+  &nbsp;&nbsp;&nbsp;&nbsp;ToDo: A) Create<br/>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; B) Take LR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6874463<br/>
+   &nbsp;&nbsp;    4.3. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/Signatures (ssViewSignaturesBrowseView) WR<br/> 
+  &nbsp;&nbsp;&nbsp;&nbsp;	  ToDo:<br/> 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		A) Add source - LR from 4.2.<br/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		B) Take WR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757200<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;     4.4. Location: Signing Service (SS)/08. SmartUI/View - Signatures - Browse View/SS adapter for AV overrides (ssViewSignaturesBrowseViewClassicAdapter) 
+ &nbsp;&nbsp;&nbsp;&nbsp;	  ToDo:<br/>	
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			A) Create<br/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			B) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/7057431<br/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			C) Set nickname "ssViewSignaturesBrowseViewClassicAdapter"<br/>
   5. Adjust REST Client WR object:
-    	  Location: Signing Service (SS)/08. SmartUI/REST Client WR
-     	  ToDo:
-		A) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757206
+    &nbsp;&nbsp;&nbsp;&nbsp;	  Location: Signing Service (SS)/08. SmartUI/REST Client WR
+   &nbsp;&nbsp;&nbsp;&nbsp;  	  ToDo:
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			A) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757206
   6. Update Signing_Proxy nodeJS application D:\nginx-1.15.0\node\Signing_Proxy\app.js. Take content from /Signing_Proxy/app.js
   7. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
   8. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data and restart services:
