@@ -30,9 +30,9 @@
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			A) Create<br/>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			B) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/7057431<br/>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			C) Set nickname "ssViewSignaturesBrowseViewClassicAdapter"<br/>
-  5. Adjust REST Client WR object:
-    &nbsp;&nbsp;&nbsp;&nbsp;	  Location: Signing Service (SS)/08. SmartUI/REST Client WR
-   &nbsp;&nbsp;&nbsp;&nbsp;  	  ToDo:
+  5. Adjust REST Client WR object:<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;	  Location: Signing Service (SS)/08. SmartUI/REST Client WR<br/>
+   &nbsp;&nbsp;&nbsp;&nbsp;  	  ToDo:<br/>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			A) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757206
   6. Update Signing_Proxy nodeJS application D:\nginx-1.15.0\node\Signing_Proxy\app.js. Take content from /Signing_Proxy/app.js
   7. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
