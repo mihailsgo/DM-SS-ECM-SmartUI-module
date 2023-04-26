@@ -6,7 +6,9 @@ Scenario Nr. 1: Deliver latest DM SS SmartUI module to new client
   5. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
   6. Add ActiveView overrides for "Function Menu" and "Promoted Commands" in classic view. Take override files here: https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module/tree/main/ECM%20overrides."Function Menu.html" file for "Function Menu" override, "Promoted Commands.html" for "Promoted commands" override.
   7. Separately adjust solution browse view component to support signing (should be discussed with SS team to define estimate for such activities - very individual for each client).
-  8. If client has requested eparakstsMobile - ask Keit to help with client credentials configurations at microservice level. Ask Edgars St. to register ePM instance at LVRTC.
+  8. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
+  9. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data: 
+  
 
 Scenario Nr. 2: Updating existing DM SS SmartUI module to latest version / updating DM SS SmartUI module to support eparakstsMobile (ePM)
   1. Microservices should be updated to latest version.
@@ -33,4 +35,5 @@ Scenario Nr. 2: Updating existing DM SS SmartUI module to latest version / updat
      	  ToDo:
 		A) Take WR content: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757206
   6. Update Signing_Proxy nodeJS application D:\nginx-1.15.0\node\Signing_Proxy\app.js. Take content from /Signing_Proxy/app.js
-  7. If client has requested eparakstsMobile - ask Keit to help with client credentials configurations at microservice level. Ask Edgars St. to register ePM instance at LVRTC.
+  7. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
+  8. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data:
