@@ -1,12 +1,31 @@
 ## Scenario Nr. 1: Deliver latest DM SS SmartUI module to new client
   1. Install microservices - container / archive / fallback
-  2. Copy from DM DEMO "D:\nginx-1.15.0\conf\nginx.conf" file and put it at the same location in new client machine.
-  3. Copy from DM DEMO Signing_Proxy application "D:\nginx-1.15.0\node\Signing_Proxy\" to same path in new client machine.
-  4. Export CS folder "CS - Applications - Signing Services" from DM DEMO ECM. Import in "CS - Applications" folder in new client ECM.
-  5. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
-  6. Add ActiveView overrides for "Function Menu" and "Promoted Commands" in classic view. Take override files here: https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module/tree/main/ECM%20overrides."Function Menu.html" file for "Function Menu" override, "Promoted Commands.html" for "Promoted commands" override.
-  7. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
-  8. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data and restart services: 
+  2. Copy from DM DEMO "D:\nginx-1.15.0\conf\nginx.conf" file and put it at the same location in new client machine. The most important ePM nginx part is:
+
+```sh
+		#EPM SIGNING					
+		location /initEPMSign {
+			 add_header 'Access-Control-Allow-Origin' '*';
+			 add_header 'Access-Control-Allow-Methods' 'POST, OPTIONS, GET';
+			 proxy_pass  http://localhost:97/initEPMSign;
+			 proxy_pass_request_headers      on;
+		}								
+		
+		location /signingEPMStatus {
+			 add_header 'Access-Control-Allow-Origin' '*';
+			 add_header 'Access-Control-Allow-Methods' 'POST, OPTIONS, GET';
+			 proxy_pass  http://localhost:97/signingEPMStatus;
+			 proxy_pass_request_headers      on;
+		}			
+		#END OF EPM SIGNING
+```
+
+  4. Copy from DM DEMO Signing_Proxy application "D:\nginx-1.15.0\node\Signing_Proxy\" to same path in new client machine.
+  5. Export CS folder "CS - Applications - Signing Services" from DM DEMO ECM. Import in "CS - Applications" folder in new client ECM.
+  6. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
+  7. Add ActiveView overrides for "Function Menu" and "Promoted Commands" in classic view. Take override files here: https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module/tree/main/ECM%20overrides."Function Menu.html" file for "Function Menu" override, "Promoted Commands.html" for "Promoted commands" override.
+  8. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
+  9. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data and restart services: 
   ![image](https://user-images.githubusercontent.com/3802544/234606602-ccd9f7b6-7bd7-408d-8315-1d4951a3ed7a.png)
   9. Separately adjust **CS CUSTOM SOLUTIONS** browse view component to support signing.
 
