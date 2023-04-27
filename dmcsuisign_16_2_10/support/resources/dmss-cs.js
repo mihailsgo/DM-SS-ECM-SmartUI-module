@@ -1,7 +1,7 @@
 /*
- version: 1.09.
+ version: 1.12.
  changes: 
-  - introducing action_type param
+  - added 'containerid' param in finishSign function
 
  for initialization run with env. settings
  DMSS.setup({
@@ -11,67 +11,45 @@
     restClientID:     WR ID for rest calls
  });
 */
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-    module.exports = factory(require('jquery'));
-  } else if (typeof csui === 'object' ){
-    // CSSmartUI
-    csui.require(['csui/lib/jquery'], factory);
-  } else {
-    // Browser globals (Note: root is window)
-    root.DMSS = factory(root.jQuery);
-  }
-}(this, function (jQuery) {
-  jQuery.dm = jQuery.dm || {};
+csui.define([
+  'csui/lib/jquery',
+  'dmsign/resources/eparaksts/hex2base',
+  'dmsign/resources/eparaksts/hwcrypto',
+  'dmsign/resources/eparaksts/hwcrypto-legacy',
+  'dmsign/resources/eparaksts/eparaksts-hwcrypto-legacy',
+  'dmsign/resources/eparaksts/eparaksts-hwcrypto',
+  'dmsign/resources/eparaksts/plugin-helper'
+], function ($) {
+  'use strict';
 
-  jQuery.dm.eventable = function (obj) {
+  $.dm = $.dm || {};
+
+  $.dm.eventable = function (obj) {
       // Allow use of Function.prototype for shorthanding the augmentation of classes
-      obj = jQuery.isFunction(obj) ? obj.prototype : obj;
+      obj = $.isFunction(obj) ? obj.prototype : obj;
       // Augment the object (or prototype) with eventable methods
-      return jQuery.extend(obj, jQuery.dm.eventable.prototype);
+      return $.extend(obj, $.dm.eventable.prototype);
     };
 
-  jQuery.dm.eventable.prototype = {
+  $.dm.eventable.prototype = {
     // The trigger event must be augmented separately because it requires a
     // new Event to prevent unexpected triggering of a method (and possibly
     // infinite recursion) when the event type matches the method name
     trigger: function (type, data) {
-      var event = new jQuery.Event(type); 
+      var event = new $.Event(type); 
       event.preventDefault();                
-      jQuery.event.trigger(event, data, this);
+      $.event.trigger(event, data, this);
       return this;
     }
   };
 
   // Augment the object with jQuery's event methods
-  jQuery.each(['bind', 'one', 'unbind', 'on', 'off'], function (i, method) {
-    jQuery.dm.eventable.prototype[method] = function (type, data, fn) {
-      jQuery(this)[method](type, data, fn);
+  $.each(['bind', 'one', 'unbind', 'on', 'off'], function (i, method) {
+    $.dm.eventable.prototype[method] = function (type, data, fn) {
+      $(this)[method](type, data, fn);
       return this;
     };
   });
-}));
-
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    // AMD
-    define(['jquery'], factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-    module.exports = factory(require('jquery'));
-  } else if (typeof csui === 'object' ){
-    // CSSmartUI
-    csui.require(['csui/lib/jquery'], factory);
-  } else {
-    // Browser globals (Note: root is window)
-    root.DMSS = factory(root.jQuery, root.hwcrypto, root.eparakstshwcrypto);
-  }
-}(this, function ($, hwcrypto, eparakstshwcrypto) {
-  'use strict';
   
   var scope = {
     signatures: signatures,
@@ -164,13 +142,13 @@
           var formatted = signTime.toJSON().substr(0,10).split('-').reverse().join('.');
           var hours_minutes = ('0' + signTime.getHours()).slice(-2) + ':' + ('0' + signTime.getMinutes()).slice(-2);
           var givenName = v.givenName;
-
+/*
           if (isPdf) {
             v.givenName = givenName.split(',')[1];
             v.lastName =  givenName.split(',')[0];
             v.idCode =    (givenName.split(',')[2] || '').split(' ')[0];
           }
-
+*/
           v.formatted = v.givenName + ' ' + v.lastName + ' (' + v.idCode + ') ' + formatted + ' ' + hours_minutes;
         });
 
@@ -259,6 +237,9 @@
       case 'smart':
         promise = signMobile(params.country, params.pcode, params.mobile, params.target, params.method);
         break;
+	  case 'epm':
+	    promise = signEPM(params.target);
+		break;
       default:
         promise = $.Deferred().reject(packError('SIGNING_METHOD_UNKNOWN'));
     }
@@ -274,6 +255,71 @@
     .always(freeSlot);
 
   }
+
+  /*
+  
+  'ERROR', 'SIGNING_FAILED', 'SIGNING_COMPLETED
+  
+  IDENTITY_APPROVED, SIGNING_FINSALISATION
+  
+  */
+  function epmCheck (session){
+	 var promise = $.Deferred();
+	   
+    if (timeoutStart.getTime() + (options.timeout * 1000) < new Date().getTime()) {
+      promise.reject(packError('SIGNING_TIMEOUT'));
+      return promise;
+    }
+
+    $.ajax(options.urlPrefix,{
+      type:     "GET",
+      cache:    false,
+      dataType: 'json',
+      data:     $.extend({ 
+        session:    session,
+        action:     'signingEPMStatus'
+      },wrParams)
+    })
+    .done(function(data){
+		console.info(data.status);
+      if ((data.status == 'IDENTITY_APPROVED') || (data.status == 'SIGNING_FINSALISATION') || (data.status == 'SIGNING_STARTED')) {
+		  
+		   scope.trigger('notify',['info', data.status]);
+		  
+		  if (data.url){
+			  window.open(data.url);
+		  }
+		  
+        setTimeout(function(){
+          $.when(epmCheck(session))
+          .fail(function(error){
+			console.info('EPMCHECK FAIL');
+            promise.reject(packError('SIGNING_ERROR',error));
+          })
+          .done(function(){
+			console.info('EPMCHECK DONE');
+            promise.resolve('SIGNING_COMPLETED');
+          });
+        }, 1000);
+      } else 
+		  if (data.status == 'SIGNING_COMPLETED')
+		  {
+			    scope.trigger('notify',['info','SIGNING_COMPLETED']);
+				
+			    console.info('RESOLVING PROMISE = SIGNING_COMPLETED');
+				promise.resolve('SIGNING_COMPLETED');
+		  } else 
+		  {
+				promise.reject(packError('SIGNING_ERROR'));
+		  }
+    })
+    .fail(function(error){
+      promise.reject(packError('SIGNING_ERROR',error));
+    });	   
+
+	return promise;
+  }
+  
 
   function mobileCheck (session, type, doc){
     var promise = $.Deferred();
@@ -368,6 +414,42 @@
     return promise;
   }
 
+  function signEPM(doc){
+	   var promise = $.Deferred();
+  
+	  $.ajax(options.urlPrefix,{
+		  type:     "GET",
+		  cache:    false,
+		  dataType: 'json',
+		  data:     $.extend({ 
+			docid:     doc,
+			action:    'initEPMSign'
+		  },wrParams)
+		})
+		.done(function(data){	   
+			if (data.sessionID != undefined) {
+						scope.trigger('notify',['info','SIGNING_STARTED']);
+						timeoutStart = new Date();
+							//start polling
+							$.when(epmCheck(data.sessionID))
+							.done(function(){
+							  promise.resolve('SIGNING_COMPLETED');
+							})
+							.fail(function(error){
+							  promise.reject(packError('SIGNING_ERROR',error));
+							});
+						window.open(data.location);	
+			} else {
+				promise.reject(packError('SIGNING_ERROR'));
+			}
+		})
+		.fail(function(error){
+		  promise.reject(packError('SIGNING_ERROR',error));
+		});			  
+		
+		 return promise;
+  }
+  
   function signMobile (country, code, phone, doc, type) {
 
     var promise = $.Deferred();
@@ -413,6 +495,7 @@
 
   function signEid(lng, contID) {
     function generateHash(id, certHex) {
+     
       return $.post(options.urlPrefix, $.extend({ 
         id: id,
         action: "hash",
@@ -420,14 +503,14 @@
       },wrParams));
     }
 
-    function finishSign (doc, signature) {
+    function finishSign (data) {
       var promise = $.Deferred();
-
       scope.trigger('notify',['info','PIN_OK']);
 
-      $.post(options.urlPrefix, $.extend({ 
-        id: doc,
-        signatureInHex: signature,
+      $.post(options.urlPrefix, $.extend({
+        id: data.containerId,
+        sessionCode: data.sessionCode,
+        signatureInHex: data.hexnew,
         action: "signEID"
       },wrParams))
       .done(function(data) {
@@ -448,6 +531,9 @@
     var promise = $.Deferred();
     var promise2;
 
+    if (lng.length == 0)
+        lng = 'LV';
+    
     try {
       if (lng == 'LV') {
         promise2 = eparakstshwcrypto.getCertificate({ lang: 'en' });
@@ -462,18 +548,19 @@
       })
       .then(function (data) { 
         var promise3 = $.Deferred();
-        
         if (lng == 'LV') {
           eparakstshwcrypto.sign(cert, { type: options.certificateType, hex: data.hex }, { lang: 'en' })
-          .then(function (signature) { promise3.resolve(signature.hex); }, function(error) { promise3.reject(packError('SIGNING_CANCELLED_BY_USER',error)); });
+          .then(function (signature) {data.hexnew = signature.hex; promise3.resolve(data); }, function(error) { promise3.reject(packError('SIGNING_CANCELLED_BY_USER',error)); });
         } else {
           hwcrypto.sign(cert, { type: options.certificateType, hex: data.hex }, { lang: 'en' })
-          .then(function (signature) { promise3.resolve(signature.hex); }, function(error) { promise3.reject(packError('SIGNING_CANCELLED_BY_USER',error)); });
+          .then(function (signature) {data.hexnew = signature.hex; promise3.resolve(data); }, function(error) { promise3.reject(packError('SIGNING_CANCELLED_BY_USER',error)); });
         }
 
         return promise3;
       })
-      .then(function (signature) { return finishSign (contID, signature); })
+      .then(function (data) { 
+        return finishSign (data); 
+       })
       .then(function(){ promise.resolve('SIGNING_COMPLETED'); }, function(error){ promise.reject(packError('SIGNING_ERROR',error)); });
 
     } catch (error) { promise.reject(packError('SIGNING_ERROR',error)); }
@@ -481,11 +568,5 @@
     return promise;
   }
 
-  if (window.csui) {//adjust globals if in CSSmartUI env.
-    window.DMSS =       module;
-    hwcrypto =          window.hwcrypto;
-    eparakstshwcrypto = window.eparakstshwcrypto;
-  }
-
   return module;
-}));
+});
