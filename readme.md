@@ -22,7 +22,7 @@
 
   4. Copy from DM DEMO Signing_Proxy application "D:\nginx-1.15.0\node\Signing_Proxy\" to same path in new client machine.
   5. Export CS folder "CS - Applications - Signing Services" from DM DEMO ECM. Import in "CS - Applications" folder in new client ECM.
-  6. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
+  6. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module. Double check that your dmss-cs.js version includes ePM functionality (search for ePM). If no - latest version is available here in github.
   7. Add ActiveView overrides for "Function Menu" and "Promoted Commands" in classic view. Take override files here: https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module/tree/main/ECM%20overrides."Function Menu.html" file for "Function Menu" override, "Promoted Commands.html" for "Promoted commands" override.
   8. Deliver small node.js app from DM DEMO (D:\nginx-1.15.0\node\Eparaksts\). This application is created to process returnURI after eparaksts homepage redirects user. Example: company X has registered such returnURI in LVRTC: https://demo.digitalmind.lv/identity?return=true. It means after user has entered all credentials at LVRTC homepage, he got redirecter to address with 2 additional parameters added by LVRTC https://demo.digitalmind.lv/identity?return=true&code=XXXXX&state=YYYYYY. This requested should be recieved by this application`s /identity API. This small application is not the only one possible solution, but just an example of how returnURI could be processed.
   9. After client has negotiated ePM contract with LVRTC, fill authentication and container-and-signature services .yaml files with the data and restart services: 
@@ -32,7 +32,7 @@
 ## Scenario Nr. 2: Updating existing DM SS SmartUI module to latest version / updating DM SS SmartUI module to support eparakstsMobile (ePM)
   1. Microservices should be updated to latest version.
   2. Unistall such modules if they are installed: DMCSUIINFO un CREATECONTAINER.
-  3. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module.
+  3. DMCSUISIGN module install - take module (dmcsuisign_16_2_10) from https://github.com/mihailsgo/DM-SS-ECM-SmartUI-module. Double check that your dmss-cs.js version includes ePM functionality (search for ePM). If no - latest version is available here in github.
   4. Changes in ECM:<br/>
   &nbsp;&nbsp; 4.1. Location: Signing Service (SS)/08. SmartUI/View - Signatures - SmartUI/Signatures (ssViewSignaturesCSUI) WR<br/>
   &nbsp;&nbsp;&nbsp;&nbsp;ToDo: A) Take WR content from DM DEMO: https://demo.digitalmind.lv/otcs/llisapi.dll/info/6757203<br/>
